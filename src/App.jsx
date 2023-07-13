@@ -18,6 +18,7 @@ import {
 function App() {
   const [todos, setTodos] = useState([]);
   const [errorInput, setErrorInput] = useState(false);
+  const [filterTask, setFilterTask] = useState("");
 
   const todoTaskRef = useRef();
 
@@ -49,56 +50,83 @@ function App() {
     setTodos(newTodos);
   };
 
+  let resultFilter = [];
+  resultFilter = todos.filter((task) => task.completed === true);
+  console.log("tareas completadas");
+  if (filterTask === "completed") {
+  } else if (filterTask === "pendings") {
+    resultFilter = todos.filter((task) => task.completed === false);
+    console.log("tareas completadas");
+  } else {
+    resultFilter = todos;
+    console.log("taraes normales");
+  }
+
   return (
     <>
       <Container maxW="sm">
         <Heading textAlign={"center"} m={2}>
           Todo App
         </Heading>
-              <Box
-                width={"sm"}
-                display={"flex"}
-                flexDirection={"row"}
-                mt={"5"}
-                mb={"4"}
-              >
-                <Input
-                  placeholder="Add task"
-                  ref={todoTaskRef}
-                  type="text"
-                  size={"lg"}
-                  isInvalid={errorInput}
-                  errorBorderColor="crimson"
-                  onKeyUp={() => setErrorInput(false)}
-                />
-                <Button
-                  onClick={handleTodoAdd}
-                  colorScheme="messenger"
-                  fontSize={"sm"}
-                  size={"lg"}
-                  ml={2}
-                >
-                  Add
-                </Button>
+        <Box
+          width={"sm"}
+          display={"flex"}
+          flexDirection={"row"}
+          mt={"5"}
+          mb={"4"}
+        >
+          <Input
+            placeholder="Add task"
+            ref={todoTaskRef}
+            type="text"
+            size={"lg"}
+            isInvalid={errorInput}
+            errorBorderColor="crimson"
+            onKeyUp={() => setErrorInput(false)}
+          />
+          <Button
+            onClick={handleTodoAdd}
+            colorScheme="messenger"
+            fontSize={"sm"}
+            size={"lg"}
+            ml={2}
+          >
+            Add
+          </Button>
 
-                <Button
-                  onClick={handleClearAll}
-                  colorScheme="messenger"
-                  fontSize={"sm"}
-                  size={"lg"}
-                  ml={2}
-                >
-                  clear all
-                </Button>
-              </Box>
+          <Button
+            onClick={handleClearAll}
+            colorScheme="messenger"
+            fontSize={"sm"}
+            size={"lg"}
+            ml={2}
+          >
+            clear all
+          </Button>
+        </Box>
 
-              <TodoList
-                todos={todos}
-                togleTodo={togleTodo}
-                deleteTodo={deleteTodo}
-              />
+        {/* <TodoList todos={todos} togleTodo={togleTodo} deleteTodo={deleteTodo} /> */}
+
+        <Button onClick={() => setFilterTask("todo")}>Task</Button>
+        <Button onClick={() => setFilterTask("completed")}>Completed</Button>
+        <Button onClick={() => setFilterTask("pendings")}>pendings</Button>
+        <TodoList
+          todos={resultFilter}
+          togleTodo={togleTodo}
+          deleteTodo={deleteTodo}
+        />
       </Container>
-      <Heading size="sm" textAlign={"center"} opacity={"0.7"} mb={10} position={"absolute"} left={"2"} top={"630"}>© 2023 – Creation of Carlos Velásquez</Heading>
+      <Heading
+        size="sm"
+        textAlign={"center"}
+        opacity={"0.7"}
+        mb={10}
+        position={"absolute"}
+        left={"2"}
+        top={"630"}
+      >
+        © 2023 – Creation of Carlos Velásquez
+      </Heading>
     </>
   );
 }
