@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { TodoList } from "./components/TodoList";
 import {
@@ -12,7 +12,6 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Text,
 } from "@chakra-ui/react";
 
 function App() {
@@ -20,17 +19,30 @@ function App() {
   const [errorInput, setErrorInput] = useState(false);
   const [filterTask, setFilterTask] = useState("");
 
-  const todoTaskRef = useRef();
+  const KEY_LOCAL_STORAGE = "tasks";
+
+  const taskRef = useRef();
+
+  useEffect(() => {
+    const storedTasks = JSON.parse(localStorage.getItem(KEY_LOCAL_STORAGE));
+    if (storedTasks) {
+      setTodos(storedTasks);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(KEY_LOCAL_STORAGE, JSON.stringify(todos));
+  }, [todos]);
 
   const handleTodoAdd = (event) => {
-    const task = todoTaskRef.current.value;
+    const task = taskRef.current.value;
     if (task === "") return setErrorInput(true);
 
     setTodos((prevTodos) => {
       return [...prevTodos, { id: uuidv4(), task, completed: false }];
     });
 
-    todoTaskRef.current.value = null;
+    taskRef.current.value = null;
   };
 
   const togleTodo = (id) => {
@@ -52,14 +64,10 @@ function App() {
 
   let resultFilter = [];
   resultFilter = todos.filter((task) => task.completed === true);
-  console.log("tareas completadas");
+
   if (filterTask === "completed") {
   } else if (filterTask === "pendings") {
     resultFilter = todos.filter((task) => task.completed === false);
-    console.log("tareas completadas");
-  } else {
-    resultFilter = todos;
-    console.log("taraes normales");
   }
 
   return (
@@ -77,7 +85,7 @@ function App() {
         >
           <Input
             placeholder="Add task"
-            ref={todoTaskRef}
+            ref={taskRef}
             type="text"
             size={"lg"}
             isInvalid={errorInput}
@@ -105,16 +113,37 @@ function App() {
           </Button>
         </Box>
 
-        {/* <TodoList todos={todos} togleTodo={togleTodo} deleteTodo={deleteTodo} /> */}
+        <Tabs>
+          <TabList>
+            <Tab>Task</Tab>
+            <Tab onClick={() => setFilterTask("completed")}>Completed</Tab>
+            <Tab onClick={() => setFilterTask("pendings")}>pendings</Tab>
+          </TabList>
 
-        <Button onClick={() => setFilterTask("todo")}>Task</Button>
-        <Button onClick={() => setFilterTask("completed")}>Completed</Button>
-        <Button onClick={() => setFilterTask("pendings")}>pendings</Button>
-        <TodoList
-          todos={resultFilter}
-          togleTodo={togleTodo}
-          deleteTodo={deleteTodo}
-        />
+          <TabPanels>
+            <TabPanel>
+              <TodoList
+                todos={todos}
+                togleTodo={togleTodo}
+                deleteTodo={deleteTodo}
+              />
+            </TabPanel>
+            <TabPanel>
+              <TodoList
+                todos={resultFilter}
+                togleTodo={togleTodo}
+                deleteTodo={deleteTodo}
+              />
+            </TabPanel>
+            <TabPanel>
+              <TodoList
+                todos={resultFilter}
+                togleTodo={togleTodo}
+                deleteTodo={deleteTodo}
+              />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Container>
       <Heading
         size="sm"

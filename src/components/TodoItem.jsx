@@ -23,30 +23,33 @@ export default function TodoItem({ todo, togleTodo, deleteTodo }) {
         height={"7vh"}
         borderRadius={"7px"}
         backgroundColor={completed === true ? "#00a6fb" : "gray.100"}
-        color={completed === true ? "white" : "black.100"}
-        p={2}
+        color={completed === true ? "white" : "black"}
+        paddingTop={6}
+        paddingBottom={6}
+        paddingLeft={3}
+        paddingRight={3}
         display={"flex"}
         justifyContent={"space-between"}
         alignItems={"center"}
       >
-        <Box>
-          {/* <Checkbox
-          
-          colorScheme="green"
-          checked={todo.complete}
-        >
-         
-        </Checkbox> */}
-
-          <Heading as="h6" size="xs">
+        <Box display={"flex"}>
+          <Switch
+            id="email-alerts"
+            onChange={handleTodoClick}
+            size={"md"}
+            isChecked={completed}
+            margin={"5px"}
+          />
+          <Heading as="h2" size="md" textAlign={"center"}>
             {task}
           </Heading>
-          <Switch id="email-alerts" onChange={handleTodoClick} size={"md"} isChecked={completed} />
         </Box>
         <IconButton
           onClick={() => deleteTodo(id)}
           icon={<CloseIcon />}
           size={"sm"}
+          backgroundColor={"transparent"}
+          color={completed === true ? "white" : "black"}
         />
       </ListItem>
     </>
