@@ -1,15 +1,11 @@
-import React from "react";
-import {
-  Box,
-  Checkbox,
-  Heading,
-  IconButton,
-  ListItem,
-  Switch,
-} from "@chakra-ui/react";
-import { CloseIcon } from "@chakra-ui/icons";
+import React, { useState } from "react";
+import { Box, IconButton, Input, ListItem, Switch } from "@chakra-ui/react";
+import { CloseIcon, EditIcon } from "@chakra-ui/icons";
 
-export default function TodoItem({ todo, togleTodo, deleteTodo }) {
+export default function TodoItem({ todo, togleTodo, deleteTodo, updateTodo }) {
+  const [text, setText] = useState("");
+  const [edit, setEdit] = useState(false);
+
   const { id, task, completed } = todo;
 
   const handleTodoClick = () => {
@@ -32,18 +28,32 @@ export default function TodoItem({ todo, togleTodo, deleteTodo }) {
         justifyContent={"space-between"}
         alignItems={"center"}
       >
-        <Box display={"flex"}>
-          <Switch
-            id="email-alerts"
-            onChange={handleTodoClick}
-            size={"md"}
-            isChecked={completed}
-            margin={"5px"}
-          />
-          <Heading as="h2" size="md" textAlign={"center"}>
-            {task}
-          </Heading>
-        </Box>
+        <Switch
+          id="email-alerts"
+          onChange={handleTodoClick}
+          size={"md"}
+          isChecked={completed}
+          margin={"5px"}
+        />
+
+        <Input
+          value={!edit? task : text}
+          variant="unstyled"
+          onChange={(event) => setText(event.target.value)}
+          onDoubleClick={() => setEdit(true)}
+          fontSize={"20"}
+        />
+
+        <IconButton
+          onClick={()=>{
+            updateTodo(id,text);
+            setEdit(false);
+          }}
+          icon={<EditIcon />}
+          size={"sm"}
+          backgroundColor={"transparent"}
+          color={completed === true ? "white" : "black"}
+        />
         <IconButton
           onClick={() => deleteTodo(id)}
           icon={<CloseIcon />}

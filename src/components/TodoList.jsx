@@ -2,7 +2,7 @@ import React from "react";
 import TodoItem from "./TodoItem";
 import { List } from "@chakra-ui/react";
 
-export function TodoList({ todos, togleTodo,deleteTodo}) {
+export function TodoList({ todos, togleTodo,deleteTodo,updateTodo}) {
 
   return (
     <>
@@ -13,8 +13,8 @@ export function TodoList({ todos, togleTodo,deleteTodo}) {
           key={todo.id}
           todo={todo}
           togleTodo={togleTodo}
-          completedTask={todo.completed}
           deleteTodo={deleteTodo}
+          updateTodo={updateTodo}
         />
       ))}
    </List>

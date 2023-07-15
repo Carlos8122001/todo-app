@@ -34,7 +34,7 @@ function App() {
     localStorage.setItem(KEY_LOCAL_STORAGE, JSON.stringify(todos));
   }, [todos]);
 
-  const handleTodoAdd = (event) => {
+  const addTodo = (event) => {
     const task = taskRef.current.value;
     if (task === "") return setErrorInput(true);
 
@@ -52,7 +52,7 @@ function App() {
     setTodos(newTodos);
   };
 
-  const handleClearAll = () => {
+  const handleClearAllTodo = () => {
     const newTodos = todos.filter((todo) => !todo.completed);
     setTodos(newTodos);
   };
@@ -61,6 +61,12 @@ function App() {
     const newTodos = todos.filter((todo) => todo.id !== id);
     setTodos(newTodos);
   };
+
+  const updateTodo = (id,value) =>{
+   const newTodos = [...todos]
+   const todo = newTodos.find((todo)=> todo.id === id);
+   todo.task = value
+  }
 
   let resultFilter = [];
   resultFilter = todos.filter((task) => task.completed === true);
@@ -93,7 +99,7 @@ function App() {
             onKeyUp={() => setErrorInput(false)}
           />
           <Button
-            onClick={handleTodoAdd}
+            onClick={addTodo}
             colorScheme="messenger"
             fontSize={"sm"}
             size={"lg"}
@@ -103,7 +109,7 @@ function App() {
           </Button>
 
           <Button
-            onClick={handleClearAll}
+            onClick={handleClearAllTodo}
             colorScheme="messenger"
             fontSize={"sm"}
             size={"lg"}
@@ -126,6 +132,7 @@ function App() {
                 todos={todos}
                 togleTodo={togleTodo}
                 deleteTodo={deleteTodo}
+                updateTodo={updateTodo}
               />
             </TabPanel>
             <TabPanel>
@@ -133,6 +140,7 @@ function App() {
                 todos={resultFilter}
                 togleTodo={togleTodo}
                 deleteTodo={deleteTodo}
+                updateTodo={updateTodo}
               />
             </TabPanel>
             <TabPanel>
@@ -140,6 +148,7 @@ function App() {
                 todos={resultFilter}
                 togleTodo={togleTodo}
                 deleteTodo={deleteTodo}
+                updateTodo={updateTodo}
               />
             </TabPanel>
           </TabPanels>
