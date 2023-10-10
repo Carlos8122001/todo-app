@@ -29,7 +29,7 @@ export default function TodoItem({ todo, togleTodo, deleteTodo }) {
           <Box display={"flex"} flexDirection={"row"} gap={3}>
             <Checkbox
               checked={completed ? true : false}
-              size={"md"}
+              size={"lg"}
               colorScheme="green"
               rounded={"full"}
               variant={"circular"}

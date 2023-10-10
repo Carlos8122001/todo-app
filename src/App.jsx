@@ -13,7 +13,6 @@ import {
   TabList,
   Tab,
   Button,
-  useColorMode,
 } from "@chakra-ui/react";
 
 import { AddIcon, DeleteIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
@@ -22,8 +21,6 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [errorInput, setErrorInput] = useState(false);
   const [filter, setFilter] = useState("all");
-
-  const { colorMode, toggleColorMode } = useColorMode();
 
   const taskComplete = [...todos].filter((task) => task.completed === true);
 
@@ -73,14 +70,6 @@ function App() {
   return (
     <>
       <Container w={"md"} maxH={"sm"} transition={"all"} transitionDuration={"0.5s"}>
-        <IconButton
-          aria-label="Search database"
-          icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-          onClick={toggleColorMode}
-          margin={4}
-          position={"absolute"}
-          right={0}
-        />
         <Heading textAlign={"center"} margin={"20px auto"}>
           Todo App
         </Heading>
