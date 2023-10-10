@@ -1,11 +1,16 @@
-import React, { useState } from "react";
-import { Box, IconButton, Input, ListItem, Switch } from "@chakra-ui/react";
+import React from "react";
+import {
+  Box,
+  Card,
+  CardBody,
+  Checkbox,
+  IconButton,
+  Switch,
+  Text,
+} from "@chakra-ui/react";
 import { CloseIcon, EditIcon } from "@chakra-ui/icons";
 
-export default function TodoItem({ todo, togleTodo, deleteTodo, updateTodo }) {
-  const [text, setText] = useState("");
-  const [edit, setEdit] = useState(false);
-
+export default function TodoItem({ todo, togleTodo, deleteTodo }) {
   const { id, task, completed } = todo;
 
   const handleTodoClick = () => {
@@ -14,54 +19,49 @@ export default function TodoItem({ todo, togleTodo, deleteTodo, updateTodo }) {
 
   return (
     <>
-      <ListItem
-        width={"sm"}
-        height={"7vh"}
-        borderRadius={"7px"}
-        backgroundColor={completed === true ? "#00a6fb" : "gray.100"}
-        color={completed === true ? "white" : "black"}
-        paddingTop={6}
-        paddingBottom={6}
-        paddingLeft={3}
-        paddingRight={3}
-        display={"flex"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-      >
-        <Switch
-          id="email-alerts"
-          onChange={handleTodoClick}
-          size={"md"}
-          isChecked={completed}
-          margin={"5px"}
-        />
-
-        <Input
-          value={!edit? task : text}
-          variant="unstyled"
-          onChange={(event) => setText(event.target.value)}
-          onDoubleClick={() => setEdit(true)}
-          fontSize={"20"}
-        />
-
-        <IconButton
-          onClick={()=>{
-            updateTodo(id,text);
-            setEdit(false);
-          }}
-          icon={<EditIcon />}
-          size={"sm"}
-          backgroundColor={"transparent"}
-          color={completed === true ? "white" : "black"}
-        />
-        <IconButton
-          onClick={() => deleteTodo(id)}
-          icon={<CloseIcon />}
-          size={"sm"}
-          backgroundColor={"transparent"}
-          color={completed === true ? "white" : "black"}
-        />
-      </ListItem>
+      <Card boxShadow={"md"} marginTop={8} w={"full"}>
+        <CardBody
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          flexDir={"row"}
+        >
+          <Box display={"flex"} flexDirection={"row"} gap={3}>
+            <Checkbox
+              checked={completed ? true : false}
+              size={"md"}
+              colorScheme="green"
+              rounded={"full"}
+              variant={"circular"}
+              onChange={() => {
+                handleTodoClick(id);
+              }}
+            />
+            <Text
+              fontSize={{sm:"lg",md:"lg",xl:"xl"}}
+              fontWeight={"medium"}
+              textAlign={"center"}
+              textDecoration={completed ? "line-through" : "none"}
+            >
+              {task}
+            </Text>
+          </Box>
+          <IconButton
+            onClick={() => {
+              deleteTodo(id);
+            }}
+            icon={<CloseIcon />}
+            bgColor={"transparent"}
+            color={"red"}
+            colorScheme="red"
+            sx={{
+              _hover: {
+                backgroundColor: "transparent",
+              },
+            }}
+          />
+        </CardBody>
+      </Card>
     </>
   );
 }

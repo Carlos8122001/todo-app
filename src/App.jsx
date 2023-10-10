@@ -1,23 +1,31 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { TodoList } from "./components/TodoList";
 import {
   Box,
-  Button,
   Input,
   Container,
   Heading,
+  InputGroup,
+  InputRightElement,
+  IconButton,
   Tabs,
   TabList,
-  TabPanels,
   Tab,
-  TabPanel,
+  Button,
+  useColorMode,
 } from "@chakra-ui/react";
+
+import { AddIcon, DeleteIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [errorInput, setErrorInput] = useState(false);
-  const [filterTask, setFilterTask] = useState("");
+  const [filter, setFilter] = useState("all");
+
+  const { colorMode, toggleColorMode } = useColorMode();
+
+  const taskComplete = [...todos].filter((task) => task.completed === true);
 
   const KEY_LOCAL_STORAGE = "tasks";
 
@@ -34,7 +42,7 @@ function App() {
     localStorage.setItem(KEY_LOCAL_STORAGE, JSON.stringify(todos));
   }, [todos]);
 
-  const addTodo = (event) => {
+  const addTodo = () => {
     const task = taskRef.current.value;
     if (task === "") return setErrorInput(true);
 
@@ -62,109 +70,95 @@ function App() {
     setTodos(newTodos);
   };
 
-  const updateTodo = (id,value) =>{
-   const newTodos = [...todos]
-   const todo = newTodos.find((todo)=> todo.id === id);
-   todo.task = value
-  }
-
-  let resultFilter = [];
-  resultFilter = todos.filter((task) => task.completed === true);
-
-  if (filterTask === "completed") {
-  } else if (filterTask === "pendings") {
-    resultFilter = todos.filter((task) => task.completed === false);
-  }
-
   return (
     <>
-      <Container maxW="sm">
-        <Heading textAlign={"center"} m={2}>
+      <Container w={"md"} maxH={"sm"} transition={"all"} transitionDuration={"0.5s"}>
+        <IconButton
+          aria-label="Search database"
+          icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+          onClick={toggleColorMode}
+          margin={4}
+          position={"absolute"}
+          right={0}
+        />
+        <Heading textAlign={"center"} margin={"20px auto"}>
           Todo App
         </Heading>
-        <Box
-          width={"sm"}
-          display={"flex"}
-          flexDirection={"row"}
-          mt={"5"}
-          mb={"4"}
-        >
-          <Input
-            placeholder="Add task"
-            ref={taskRef}
-            type="text"
-            size={"lg"}
-            isInvalid={errorInput}
-            errorBorderColor="crimson"
-            onKeyUp={() => setErrorInput(false)}
-          />
-          <Button
-            onClick={addTodo}
-            colorScheme="messenger"
-            fontSize={"sm"}
-            size={"lg"}
-            ml={2}
-          >
-            Add
-          </Button>
 
-          <Button
-            onClick={handleClearAllTodo}
-            colorScheme="messenger"
-            fontSize={"sm"}
-            size={"lg"}
-            ml={2}
-          >
-            clear all
-          </Button>
+        <Box>
+          <InputGroup size="md">
+            <Input
+              pr="4.5rem"
+              type={"text"}
+              placeholder="Add your task"
+              errorBorderColor="crimson"
+              borderRadius={"full"}
+              size={"lg"}
+              focusBorderColor="green"
+              variant={"filled"}
+              ref={taskRef}
+              isInvalid={errorInput}
+              onChange={() => setErrorInput(false)}
+            />
+            <InputRightElement>
+              <IconButton
+                aria-label="Search database"
+                icon={<AddIcon />}
+                size={"md"}
+                borderRadius={"full"}
+                marginRight={"3"}
+                marginTop={"2"}
+                color={"white"}
+                colorScheme="green"
+                onClick={addTodo}
+                type="submit"
+              />
+            </InputRightElement>
+          </InputGroup>
         </Box>
-
-        <Tabs>
+        <TodoList
+          todos={
+            filter === "all"
+              ? todos
+              : filter === "complete"
+              ? taskComplete
+              : todos
+          }
+          togleTodo={togleTodo}
+          deleteTodo={deleteTodo}
+        />
+        <Tabs
+          variant="soft-rounded"
+          colorScheme="green"
+          marginTop={4}
+          size={"md"}
+          marginLeft={"auto"}
+          marginRight={"auto"}
+        >
           <TabList>
-            <Tab>Task</Tab>
-            <Tab onClick={() => setFilterTask("completed")}>Completed</Tab>
-            <Tab onClick={() => setFilterTask("pendings")}>pendings</Tab>
-          </TabList>
+            <Tab onClick={() => setFilter("all")}>All {todos.length}</Tab>
 
-          <TabPanels>
-            <TabPanel>
-              <TodoList
-                todos={todos}
-                togleTodo={togleTodo}
-                deleteTodo={deleteTodo}
-                updateTodo={updateTodo}
-              />
-            </TabPanel>
-            <TabPanel>
-              <TodoList
-                todos={resultFilter}
-                togleTodo={togleTodo}
-                deleteTodo={deleteTodo}
-                updateTodo={updateTodo}
-              />
-            </TabPanel>
-            <TabPanel>
-              <TodoList
-                todos={resultFilter}
-                togleTodo={togleTodo}
-                deleteTodo={deleteTodo}
-                updateTodo={updateTodo}
-              />
-            </TabPanel>
-          </TabPanels>
+            <Tab
+              onClick={() => {
+                setFilter("complete");
+              }}
+            >
+              Complete {taskComplete.length}
+            </Tab>
+            <Button
+              rightIcon={<DeleteIcon />}
+              colorScheme="green"
+              variant="ghost"
+              size={"md"}
+              borderRadius={"full"}
+              marginLeft={3}
+              onClick={handleClearAllTodo}
+            >
+              Clear Completed
+            </Button>
+          </TabList>
         </Tabs>
       </Container>
-      <Heading
-        size="sm"
-        textAlign={"center"}
-        opacity={"0.7"}
-        mb={10}
-        position={"absolute"}
-        left={"2"}
-        top={"630"}
-      >
-        © 2023 – Creation of Carlos Velásquez
-      </Heading>
     </>
   );
 }
