@@ -1,5 +1,4 @@
-import { checkboxAnatomy } from "@chakra-ui/anatomy";
-import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
+
 import { extendTheme } from "@chakra-ui/react";
 import { checkboxTheme } from "./CheckBoxTheme";
 
